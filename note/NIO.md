@@ -26,3 +26,16 @@
 * __分配__：例如`allocate(100)`将会返回一个大小为100，position为0的空缓冲区。
 * __直接分配__：`ByteBuffer`类有一个`allocateDirect(int capacity)`的方法，不创建后台数组，VM直接在网卡、核心内存等位置的缓冲区上直接进行内存访问，不能使用缓冲区的`array()`以及`arrayOffset()`方法，在缓冲区容量很大导致性能实在无法满足需要时可以考虑使用，否则不推荐。
 * __包装__：现在发送的数据一经准备好，使用`warp(byte[] data)`方法可以直接把数据包装为ByteBuffer，__注意：这个数组会作为引用传入，之后对数组的操作将会反映到ByteBuffer中！__。
+
+填充和排空
+----------
+缓冲区其实是一个数组，有一个cursor在数组中移动（只能向后），所以在读写到结尾时继续读写会抛出`BufferOverflowException`，使用`flip()`方法可以重置cursor的位置到开头，使用`hasRemaining()`方法可以判断cursor有没有到达结尾，使用`get()`方法可以得到游标指向的元素，并把游标向后移动一位。使用方法`get(int index)`，`put(int index, byte b)`方法可以直接在缓冲区的指定位置获取或放置元素（越界会抛出`IndexOutoOfBoundsException`），使用这两个绝对方法可以轻松实现缓冲区的逆序。
+
+批量方法
+--------
+例如对ByteBuffer有：
+`get(byte[] dst, int offset, int len)`
+`get(byte[] des)`
+`put(byte[] array, int offset, int len)`
+`put(byte[] array)`
+这些方法可以对数组和其对应的Buffer之间直接进行数据的传递，在`get`方法中有可能抛出`BufferUnderflowException`表示Buffer的元素数量不足以填充整个目标数组，在`put`方法中有可能抛出`BufferOverflowException`表示Buffer的容量小于数组中需要填充的元素数量。
