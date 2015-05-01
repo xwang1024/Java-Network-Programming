@@ -39,3 +39,8 @@
 `put(byte[] array, int offset, int len)`
 `put(byte[] array)`
 这些方法可以对数组和其对应的Buffer之间直接进行数据的传递，在`get`方法中有可能抛出`BufferUnderflowException`表示Buffer的元素数量不足以填充整个目标数组，在`put`方法中有可能抛出`BufferOverflowException`表示Buffer的容量小于数组中需要填充的元素数量。
+
+数据转换
+--------
+
+
